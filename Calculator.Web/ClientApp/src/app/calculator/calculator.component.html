@@ -49,7 +49,7 @@ https://codepen.io/AndrewCreech/pen/vFEry -->
       <th>Timestamp</th>
     </tr>
     <tr *ngFor="let log of calculation.response">
-      <td> {{ log.id }} </td>
+      <td> <span *ngIf="log.id != 0" >{{ log.id }}</span> </td>
       <td> {{ log.calculation }} </td>
       <td> {{ log.ipAddress }} </td>
       <td> {{ log.timestamp | date:'medium'}} </td>

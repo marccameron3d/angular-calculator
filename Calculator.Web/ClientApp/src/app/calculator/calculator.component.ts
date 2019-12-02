@@ -4,19 +4,19 @@ import { Calculation } from "../shared/models/calculation.model";
 import { CalculatorLog } from "../shared/models/calculatorLog.model";
 
 @
-Component({
-  selector: 'calculator',
-  templateUrl: './calculator.component.html',
-  styleUrls: ['./calculator.component.css'],
-})
+    Component({
+        selector: 'calculator',
+        templateUrl: './calculator.component.html',
+        styleUrls: ['./calculator.component.css'],
+    })
 export class CalculatorComponent {
 
     public message: string;
-    calculation : Calculation;
+    calculation: Calculation;
     calc: CalculatorLog;
     http: HttpClient;
     baseUrl: string;
-    equation : string;
+    equation: string;
 
     constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
         this.calc = new CalculatorLog();
@@ -26,35 +26,44 @@ export class CalculatorComponent {
         this.equation = "";
     }
 
-    add(character : string) {
-      this.equation += character;
+    add(character: string) {
+        this.equation += character;
     }
 
     clear() {
-      this.equation = "";
+        this.equation = "";
     }
 
     getEntries() {
-      this.http.get<Calculation>(this.baseUrl + 'calculator').subscribe(result => {
-          this.calculation = result;
-          this.message = result.message;
-      }, error => console.error(error));
+        this.http.get<Calculation>(this.baseUrl + 'calculator').subscribe(result => {
+            this.calculation = result;
+            this.message = result.message;
+        }, error => console.error(error));
     }
 
-    calculate(expression : string) {
+    calculate(expression: string) {
 
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        })};
+        if (!expression) {
+            this.message = "Please enter a value to evaluate";
+            return;
+        }
 
-      this.calc.calculation = expression;
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
 
-      this.http.post<Calculation>(this.baseUrl + 'calculator', this.calc, httpOptions).subscribe(result => {
-          this.calculation = result;
-          this.message = result.message;
-          this.equation = result.response[0].result;
-      }, error => console.error(error));
+        this.calc.calculation = expression;
+
+        this.http.post<Calculation>(this.baseUrl + 'calculator', this.calc, httpOptions).subscribe(result => {
+            this.calculation = result;
+            this.message = result.message;
+            this.equation = result.response[0].result;
+        }, error => {
+                this.message = error.error.message;
+        });
+
     }
 
 
