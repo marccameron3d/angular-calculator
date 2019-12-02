@@ -15,23 +15,23 @@ https://codepen.io/AndrewCreech/pen/vFEry -->
     <fieldset id="container">
       <form name="calculator" style="width: 184px;">
         <input id="display" type="text" name="display" readonly [value]="equation">
-        <input class="button digits" type="button" value="7" (click)="add(7)">
-        <input class="button digits" type="button" value="8" (click)="add(8)">
-        <input class="button digits" type="button" value="9" (click)="add(9)">
+        <input class="button digits" type="button" value="7" (click)="add('7')">
+        <input class="button digits" type="button" value="8" (click)="add('8')">
+        <input class="button digits" type="button" value="9" (click)="add('9')">
         <input class="button mathButtons" type="button" value="+" (click)="add(' + ')">
         <br>
-        <input class="button digits" type="button" value="4" (click)="add(4)">
-        <input class="button digits" type="button" value="5" (click)="add(5)">
-        <input class="button digits" type="button" value="6" (click)="add(6)">
+        <input class="button digits" type="button" value="4" (click)="add('4')">
+        <input class="button digits" type="button" value="5" (click)="add('5')">
+        <input class="button digits" type="button" value="6" (click)="add('6')">
         <input class="button mathButtons" type="button" value="-" (click)="add(' - ')">
         <br>
-        <input class="button digits" type="button" value="1" (click)="add(1)">
-        <input class="button digits" type="button" value="2" (click)="add(2)">
-        <input class="button digits" type="button" value="3" (click)="add(3)">
+        <input class="button digits" type="button" value="1" (click)="add('1')">
+        <input class="button digits" type="button" value="2" (click)="add('2')">
+        <input class="button digits" type="button" value="3" (click)="add('3')">
         <input class="button mathButtons" type="button" value="x" (click)="add(' * ')">
         <br>
         <input id="clearButton" class="button" type="button" value="C" (click)="clear()">
-        <input class="button digits" type="button" value="0" (click)="add(0)">
+        <input class="button digits" type="button" value="0" (click)="add('0')">
         <input class="button mathButtons" type="button" value="=" (click)="calculate(equation)">
         <input class="button mathButtons" type="button" value="/" (click)="add(' / ')">
       </form>
