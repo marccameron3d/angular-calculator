@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Calculator.DAL.Service
 {
+    /// <summary>
+    /// Interface class to blueprint the db dapper actions on the calculation logs table
+    /// </summary>
     public class CalculationLogsRepository : ICalculationLogsRepository
     {
         private readonly IConfiguration _config;
@@ -19,8 +22,16 @@ namespace Calculator.DAL.Service
             _config = config;
         }
 
+        /// <summary>
+        /// Set up connection string for Dapper
+        /// </summary>
         public IDbConnection Connection => new SqlConnection(_config.GetConnectionString("CalculationLogs"));
 
+        /// <summary>
+        /// Get the correct log entry by the primary key
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<CalculationLog> GetCalculationLogById(int id)
         {
             using (IDbConnection conn = Connection)
@@ -32,6 +43,11 @@ namespace Calculator.DAL.Service
             }
         }
 
+        /// <summary>
+        /// Get the correct log entry by IPAddress, useful for returning history of calculations
+        /// </summary>
+        /// <param name="IPAddress"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<CalculationLog>> GetCalculationLogByIP(string IPAddress)
         {
             using (IDbConnection conn = Connection)
@@ -43,6 +59,10 @@ namespace Calculator.DAL.Service
             }
         }
 
+        /// <summary>
+        /// Get all available logs
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<CalculationLog>> GetCalculationLogs()
         {
             using (IDbConnection conn = Connection)
@@ -54,6 +74,11 @@ namespace Calculator.DAL.Service
             }
         }
 
+        /// <summary>
+        /// Insert Log into the calculation logs table
+        /// </summary>
+        /// <param name="calculationLog"></param>
+        /// <returns></returns>
         public int InsertCalculationLog(CalculationLog calculationLog)
         {
             using (IDbConnection conn = Connection)

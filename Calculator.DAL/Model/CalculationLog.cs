@@ -2,6 +2,9 @@
 
 namespace Calculator.DAL.Model
 {
+    /// <summary>
+    /// Model of the Calculation Log Table
+    /// </summary>
     public class CalculationLog
     {
         public int Id { get; set; }
