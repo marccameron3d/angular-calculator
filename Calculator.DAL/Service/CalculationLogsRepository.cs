@@ -70,7 +70,7 @@ namespace Calculator.DAL.Service
                 string sQuery = "SELECT * FROM CalculatorLogs";
                 conn.Open();
                 var result = await conn.QueryAsync<CalculatorLog>(sQuery);
-                return result;
+                return result.OrderBy(x => x.Id);
             }
         }
 
