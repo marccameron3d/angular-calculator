@@ -1,8 +1,31 @@
-<h1>Calculator</h1>
+<div style="text-align:center">
+  <h1>Calculator</h1>
+  <input type="number" id="firstNumber" placeholder="First Number" class="form-control" #first>
+  <input type="number" id="secondNumber" placeholder="Second Number" class="form-control" #second>
+  <br>
+  <button type="submit" (click)='calculate(first.value, second.value)'>Calculate</button>
+</div>
+<div>
+  <code>
+    {{message}}
+  </code>
+</div>
 
-<p>Get Message :{{getCalculation?.message}} </p>
-
-<p>Post Message :{{postCalculation?.message}} </p>
-<input type="number"/>
-<input type="number" />
-<button>Send</button>
+<div>
+  <button (click)="getEntries()">Get Entries</button>
+  <table>
+    <thead>Results</thead>
+    <tr>
+      <th>Id</th>
+      <th>Calculation</th>
+      <th>Ip Address</th>
+      <th>Timestamp</th>
+    </tr>
+    <tr *ngFor="let log of calculation.response">
+      <td> {{ log.id }} </td>
+      <td> {{ log.calculation }} </td>
+      <td> {{ log.ipAddress }} </td>
+      <td> {{ log.timestamp }} </td>
+    </tr>
+  </table>
+</div>

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Calculator.API.Model;
 using Calculator.DAL.Interface;
 using Calculator.DAL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Calculator.API.Controllers
 {
@@ -15,10 +17,11 @@ namespace Calculator.API.Controllers
     public class CalculatorController : ControllerBase
     {
         private readonly ICalculationLogsRepository _calculationLogsRepository;
-
-        public CalculatorController(ICalculationLogsRepository calculationLogsRepository)
+        private IHttpContextAccessor _accessor;
+        public CalculatorController(ICalculationLogsRepository calculationLogsRepository, IHttpContextAccessor accessor)
         {
             this._calculationLogsRepository = calculationLogsRepository;
+            this._accessor = accessor;
         }
 
         /// <summary>
@@ -26,23 +29,21 @@ namespace Calculator.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult<Calculation> Post()
+        public ActionResult<Calculation> Post([FromBody] CalculatorLog calculatorLog)
         {
-            var calcLog = new CalculatorLog()
-            {
-                IPAddress = "123456789",
-                Calculation = "2+2",
-                Result = 4,
-                Timestamp = DateTime.UtcNow,
-            };
-            
-            var result = this._calculationLogsRepository.InsertCalculationLog(calcLog);
+            //Retrieving the remote ip, ::1 is a IPv6 fallback for localhost
+            var remoteIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            calculatorLog.Timestamp = DateTime.UtcNow;
+            calculatorLog.IPAddress = remoteIp == "::1" ? "localhost" : remoteIp;
+
+            var result = this._calculationLogsRepository.InsertCalculationLog(calculatorLog);
             
             if (result > 0)
             {
                 return StatusCode((int)HttpStatusCode.OK, new Calculation(){Message = "successfully added to table"});
             }
 
+            //not really unauthorized but an example of error handling.
             return StatusCode((int) HttpStatusCode.Unauthorized,
                 new Calculation() {Message = "unable to add to table", StatusCode = HttpStatusCode.Unauthorized});
         }
@@ -59,14 +60,16 @@ namespace Calculator.API.Controllers
             var calculations = new Calculation()
             {
                Response = calculationLogs,
+               Message = "Retrieved Logs"
             };
 
             if (calculationLogs.Any())
             {
-                return StatusCode((int) calculations.StatusCode, calculations.Response);
+                return StatusCode((int) calculations.StatusCode, calculations);
             }
-            
-            return StatusCode((int)HttpStatusCode.OK, calculations.Response);
+
+            calculations.Message = "No results found";
+            return StatusCode((int)HttpStatusCode.OK, calculations);
         }
     }
 }

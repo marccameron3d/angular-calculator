@@ -83,14 +83,13 @@ namespace Calculator.DAL.Service
         {
             using (IDbConnection conn = Connection)
             {
-                string sQuery = "INSERT INTO CalculatorLogs (IPAddress,Timestamp,Calculation,Result) VALUES (@IPAddress, @Timestamp, @Calculation, @Result)";
+                string sQuery = "INSERT INTO CalculatorLogs (IPAddress,Timestamp,Calculation) VALUES (@IPAddress, @Timestamp, @Calculation)";
                 conn.Open();
                 var affectedRows = conn.Execute(sQuery, new 
                 {
                     IPAddress = calculatorLog.IPAddress,
                     Timestamp = calculatorLog.Timestamp,
                     Calculation = calculatorLog.Calculation,
-                    Result = calculatorLog.Result,
                 });
                 return affectedRows;
             }

@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Calculation } from "../shared/models/calculation.model";
+import { CalculatorLog } from "../shared/models/calculatorLog.model";
 
 @Component({
     selector: 'calculator',
@@ -8,36 +9,38 @@ import { Calculation } from "../shared/models/calculation.model";
 })
 export class CalculatorComponent {
 
+    public message: string;
+    calculation : Calculation;
+    calc: CalculatorLog;
+    http: HttpClient;
+    baseUrl: string;
+
     constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-
-        //http.get<Calculation>(baseUrl + 'calculator').subscribe(result => {
-        //    this.getCalculation = result;
-        //}, error => console.error(error));
-
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json'
-            })
-        };
-
-
-
-        http.post<Calculation>(baseUrl + 'calculator', null, httpOptions).subscribe(result => {
-            this.postCalculation = result;
-        }, error => console.error(error));
-
+        this.calc = new CalculatorLog();
+        this.http = http;
+        this.baseUrl = baseUrl;
+        this.calculation = new Calculation();
     }
 
-    Sum(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    getEntries() {
+      this.http.get<Calculation>(this.baseUrl + 'calculator').subscribe(result => {
+          this.calculation = result;
+          this.message = result.message;
+      }, error => console.error(error));
+    }
+
+    calculate(first: number, second: number) {
 
       const httpOptions = {
         headers: new HttpHeaders({
           'Content-Type': 'application/json'
-        })
-      };
+        })};
 
-      http.post<Calculation>(baseUrl + 'calculator', null, httpOptions).subscribe(result => {
-        this.postCalculation = result;
+        this.calc.calculation = first + " + " + second;
+
+      this.http.post<Calculation>(this.baseUrl + 'calculator', this.calc, httpOptions).subscribe(result => {
+          this.calculation = result;
+          this.message = result.message;
       }, error => console.error(error));
     }
 
