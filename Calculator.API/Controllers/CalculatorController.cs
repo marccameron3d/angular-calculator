@@ -31,10 +31,16 @@ namespace Calculator.API.Controllers
         [HttpPost]
         public ActionResult<Calculation> Post([FromBody] CalculatorLog calculatorLog)
         {
+            //Set timestamp
+            calculatorLog.Timestamp = DateTime.UtcNow;
+
             //Retrieving the remote ip, ::1 is a IPv6 fallback for localhost
             var remoteIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            calculatorLog.Timestamp = DateTime.UtcNow;
             calculatorLog.IPAddress = remoteIp == "::1" ? "localhost" : remoteIp;
+
+            //Bug with NaN if divided by zero, check to make sure no exception is thrown
+            if (calculatorLog.Calculation == "NaN")
+                calculatorLog.Calculation = "0";
 
             //compute expression over data-tables
             DataTable dt = new DataTable();
@@ -48,6 +54,7 @@ namespace Calculator.API.Controllers
 
             calculatorLog.Result = v.ToString();
 
+            //call to insert to db
             var result = this._calculationLogsRepository.InsertCalculationLog(calculatorLog);
 
             if (result > 0)

@@ -3,9 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Calculation } from "../shared/models/calculation.model";
 import { CalculatorLog } from "../shared/models/calculatorLog.model";
 
-@Component({
-    selector: 'calculator',
-    templateUrl: './calculator.component.html',
+@
+Component({
+  selector: 'calculator',
+  templateUrl: './calculator.component.html',
+  styleUrls: ['./calculator.component.css'],
 })
 export class CalculatorComponent {
 
