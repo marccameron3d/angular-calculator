@@ -17,5 +17,7 @@ namespace Calculator.DAL.Model
 
         public string Calculation { get; set; }
 
+        public string Result { get; set; }
+
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Calculator.API.Model;
 using Calculator.DAL.Interface;
@@ -17,7 +17,7 @@ namespace Calculator.API.Controllers
     public class CalculatorController : ControllerBase
     {
         private readonly ICalculationLogsRepository _calculationLogsRepository;
-        private IHttpContextAccessor _accessor;
+        private readonly IHttpContextAccessor _accessor;
         public CalculatorController(ICalculationLogsRepository calculationLogsRepository, IHttpContextAccessor accessor)
         {
             this._calculationLogsRepository = calculationLogsRepository;
@@ -36,16 +36,33 @@ namespace Calculator.API.Controllers
             calculatorLog.Timestamp = DateTime.UtcNow;
             calculatorLog.IPAddress = remoteIp == "::1" ? "localhost" : remoteIp;
 
+            //compute expression over data-tables
+            DataTable dt = new DataTable();
+            var v = dt.Compute(calculatorLog.Calculation, "");
+
+            if (v == null)
+            {
+                return StatusCode((int)HttpStatusCode.Unauthorized,
+                        new Calculation() { Message = "expression not valid", StatusCode = HttpStatusCode.Unauthorized });
+            }
+
+            calculatorLog.Result = v.ToString();
+
             var result = this._calculationLogsRepository.InsertCalculationLog(calculatorLog);
-            
+
             if (result > 0)
             {
-                return StatusCode((int)HttpStatusCode.OK, new Calculation(){Message = "successfully added to table"});
+                return StatusCode((int)HttpStatusCode.OK,
+                    new Calculation()
+                    {
+                        Message = "successfully added to table",
+                        Response = new List<CalculatorLog>(){calculatorLog}
+                    });
             }
 
             //not really unauthorized but an example of error handling.
-            return StatusCode((int) HttpStatusCode.Unauthorized,
-                new Calculation() {Message = "unable to add to table", StatusCode = HttpStatusCode.Unauthorized});
+            return StatusCode((int)HttpStatusCode.Unauthorized,
+                new Calculation() { Message = "unable to add to table", StatusCode = HttpStatusCode.Unauthorized });
         }
 
         /// <summary>
@@ -59,13 +76,13 @@ namespace Calculator.API.Controllers
 
             var calculations = new Calculation()
             {
-               Response = calculationLogs,
-               Message = "Retrieved Logs"
+                Response = calculationLogs,
+                Message = "Retrieved Logs"
             };
 
             if (calculationLogs.Any())
             {
-                return StatusCode((int) calculations.StatusCode, calculations);
+                return StatusCode((int)calculations.StatusCode, calculations);
             }
 
             calculations.Message = "No results found";
