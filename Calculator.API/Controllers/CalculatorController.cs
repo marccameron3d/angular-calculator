@@ -42,15 +42,21 @@ namespace Calculator.API.Controllers
             if (calculatorLog.Calculation == "NaN")
                 calculatorLog.Calculation = "0";
 
+            object v;
             //compute expression over data-tables
-            DataTable dt = new DataTable();
-            var v = dt.Compute(calculatorLog.Calculation, "");
-
-            if (v == null)
+            try
             {
-                return StatusCode((int)HttpStatusCode.Unauthorized,
-                        new Calculation() { Message = "expression not valid", StatusCode = HttpStatusCode.Unauthorized });
+                DataTable dt = new DataTable();
+                v = dt.Compute(calculatorLog.Calculation, "");
             }
+            catch (Exception e)
+            {
+                    return StatusCode((int) HttpStatusCode.BadRequest,
+                        new Calculation() { Message = e.Message, StatusCode = HttpStatusCode.BadRequest });
+            }
+
+            if(v == null)
+                return StatusCode((int)HttpStatusCode.OK, new Calculation() { Message = "Calculation Error!", StatusCode = HttpStatusCode.OK });
 
             calculatorLog.Result = v.ToString();
 
