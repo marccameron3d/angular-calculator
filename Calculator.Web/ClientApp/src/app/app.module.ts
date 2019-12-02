@@ -6,9 +6,11 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
+import { CalculatorComponent } from "./calculator/calculator.component";
 
 @NgModule({
     declarations: [
+        CalculatorComponent,
         HomeComponent,
         AppComponent
     ],

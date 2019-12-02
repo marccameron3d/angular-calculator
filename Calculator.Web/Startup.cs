@@ -1,3 +1,5 @@
+using Calculator.DAL.Interface;
+using Calculator.DAL.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -25,6 +27,8 @@ namespace Calculator.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddTransient<ICalculationLogsRepository, CalculationLogsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
