@@ -8,14 +8,11 @@ import { Calculation } from "../shared/models/calculation.model";
 })
 export class CalculatorComponent {
 
-    public getCalculation: Calculation;
-    public postCalculation: Calculation;
-
     constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
 
-        http.get<Calculation>(baseUrl + 'calculator').subscribe(result => {
-            this.getCalculation = result;
-        }, error => console.error(error));
+        //http.get<Calculation>(baseUrl + 'calculator').subscribe(result => {
+        //    this.getCalculation = result;
+        //}, error => console.error(error));
 
         const httpOptions = {
             headers: new HttpHeaders({
@@ -23,11 +20,28 @@ export class CalculatorComponent {
             })
         };
 
+
+
         http.post<Calculation>(baseUrl + 'calculator', null, httpOptions).subscribe(result => {
             this.postCalculation = result;
         }, error => console.error(error));
 
     }
+
+    Sum(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        })
+      };
+
+      http.post<Calculation>(baseUrl + 'calculator', null, httpOptions).subscribe(result => {
+        this.postCalculation = result;
+      }, error => console.error(error));
+    }
+
+
 }
 
 

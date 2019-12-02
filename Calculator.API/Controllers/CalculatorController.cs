@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Calculator.API.Model;
 using Calculator.DAL.Interface;
+using Calculator.DAL.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calculator.API.Controllers
@@ -26,12 +28,23 @@ namespace Calculator.API.Controllers
         [HttpPost]
         public ActionResult<Calculation> Post()
         {
-            var calc =  new Calculation()
+            var calcLog = new CalculatorLog()
             {
-                Message = "Post Calculation",
-                StatusCode = HttpStatusCode.Accepted,
+                IPAddress = "123456789",
+                Calculation = "2+2",
+                Result = 4,
+                Timestamp = DateTime.UtcNow,
             };
-            return StatusCode((int)calc.StatusCode, calc);
+            
+            var result = this._calculationLogsRepository.InsertCalculationLog(calcLog);
+            
+            if (result > 0)
+            {
+                return StatusCode((int)HttpStatusCode.OK, new Calculation(){Message = "successfully added to table"});
+            }
+
+            return StatusCode((int) HttpStatusCode.Unauthorized,
+                new Calculation() {Message = "unable to add to table", StatusCode = HttpStatusCode.Unauthorized});
         }
 
         /// <summary>

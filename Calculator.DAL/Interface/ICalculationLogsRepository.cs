@@ -15,26 +15,26 @@ namespace Calculator.DAL.Interface
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<CalculationLog> GetCalculationLogById(int id);
+        Task<CalculatorLog> GetCalculationLogById(int id);
 
         /// <summary>
         /// Get the correct log entry by IPAddress, useful for returning history of calculations
         /// </summary>
         /// <param name="IPAddress"></param>
         /// <returns></returns>
-        Task<IEnumerable<CalculationLog>> GetCalculationLogByIP(string IPAddress);
+        Task<IEnumerable<CalculatorLog>> GetCalculationLogByIP(string IPAddress);
 
         /// <summary>
         /// Get all available logs
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<CalculationLog>> GetCalculationLogs();
+        Task<IEnumerable<CalculatorLog>> GetCalculationLogs();
 
         /// <summary>
         /// Insert Log into the calculation logs table
         /// </summary>
-        /// <param name="calculationLog"></param>
+        /// <param name="calculatorLog"></param>
         /// <returns></returns>
-        int InsertCalculationLog(CalculationLog calculationLog);
+        int InsertCalculationLog(CalculatorLog calculatorLog);
     }
 }

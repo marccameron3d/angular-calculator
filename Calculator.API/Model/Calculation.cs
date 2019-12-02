@@ -7,7 +7,7 @@ namespace Calculator.API.Model
 {
     public class Calculation : IServiceResponse
     {
-        public IEnumerable<CalculationLog> Response { get; set; } = new List<CalculationLog>();
+        public IEnumerable<CalculatorLog> Response { get; set; } = new List<CalculatorLog>();
         public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
         public string Message { get; set; }
     }

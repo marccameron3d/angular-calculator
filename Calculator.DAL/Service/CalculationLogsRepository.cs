@@ -32,13 +32,13 @@ namespace Calculator.DAL.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<CalculationLog> GetCalculationLogById(int id)
+        public async Task<CalculatorLog> GetCalculationLogById(int id)
         {
             using (IDbConnection conn = Connection)
             {
                 string sQuery = "SELECT * WHERE ID = @ID";
                 conn.Open();
-                var result = await conn.QueryAsync<CalculationLog>(sQuery, new { ID = id });
+                var result = await conn.QueryAsync<CalculatorLog>(sQuery, new { ID = id });
                 return result.FirstOrDefault();
             }
         }
@@ -48,13 +48,13 @@ namespace Calculator.DAL.Service
         /// </summary>
         /// <param name="IPAddress"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<CalculationLog>> GetCalculationLogByIP(string IPAddress)
+        public async Task<IEnumerable<CalculatorLog>> GetCalculationLogByIP(string IPAddress)
         {
             using (IDbConnection conn = Connection)
             {
                 string sQuery = "SELECT * WHERE IP = @IP";
                 conn.Open();
-                var result = await conn.QueryAsync<CalculationLog>(sQuery, new {IP = IPAddress});
+                var result = await conn.QueryAsync<CalculatorLog>(sQuery, new {IP = IPAddress});
                 return result;
             }
         }
@@ -63,13 +63,13 @@ namespace Calculator.DAL.Service
         /// Get all available logs
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<CalculationLog>> GetCalculationLogs()
+        public async Task<IEnumerable<CalculatorLog>> GetCalculationLogs()
         {
             using (IDbConnection conn = Connection)
             {
-                string sQuery = "SELECT * FROM CalculationLogs";
+                string sQuery = "SELECT * FROM CalculatorLogs";
                 conn.Open();
-                var result = await conn.QueryAsync<CalculationLog>(sQuery);
+                var result = await conn.QueryAsync<CalculatorLog>(sQuery);
                 return result;
             }
         }
@@ -77,15 +77,21 @@ namespace Calculator.DAL.Service
         /// <summary>
         /// Insert Log into the calculation logs table
         /// </summary>
-        /// <param name="calculationLog"></param>
+        /// <param name="calculatorLog"></param>
         /// <returns></returns>
-        public int InsertCalculationLog(CalculationLog calculationLog)
+        public int InsertCalculationLog(CalculatorLog calculatorLog)
         {
             using (IDbConnection conn = Connection)
             {
-                string sQuery = "INSERT INTO CalculationLogs (CalculationLog) VALUES (@CalculationLog)";
+                string sQuery = "INSERT INTO CalculatorLogs (IPAddress,Timestamp,Calculation,Result) VALUES (@IPAddress, @Timestamp, @Calculation, @Result)";
                 conn.Open();
-                var affectedRows = conn.Execute(sQuery, calculationLog);
+                var affectedRows = conn.Execute(sQuery, new 
+                {
+                    IPAddress = calculatorLog.IPAddress,
+                    Timestamp = calculatorLog.Timestamp,
+                    Calculation = calculatorLog.Calculation,
+                    Result = calculatorLog.Result,
+                });
                 return affectedRows;
             }
         }
